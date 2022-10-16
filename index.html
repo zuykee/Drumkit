@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="sounds">
+    
+    <div data-key="65" class="sound clap"><kbd>A</kbd><span class="sound-name"> A<br> CLAP</span><button data-key="65"  type="button" class="play btn-reset btn-clap"></button></div>
+    <div data-key="83" class="sound hihat"><kbd>S</kbd><span class="sound-name">S<br>HIHAT</span><button data-key="83" type="button" class="play btn-reset btn-hihat"></button></div>
+    <div data-key="68" class="sound kick"><kbd>D</kbd><span class="sound-name">D<br>KICK</span><button data-key="68" type="button" class="play btn-reset btn-kick"></button></div>
+    <div data-key="70" class="sound openhat"><kbd>F</kbd><span class="sound-name">F<br>OPENHAT</span><button data-key="70" type="button" class="play btn-reset btn-openhat"></button></div>
+    <div data-key="71" class="sound boom"><kbd>G</kbd><span class="sound-name">G<br>BOOM</span><button data-key="71" type="button" class="play btn-reset btn-boom"></button></div>
+    <div data-key="72" class="sound ride"><kbd>H</kbd><span class="sound-name">H<br>RIDE</span><button data-key="72" type="button" class="play btn-reset btn-ride"></button></div>
+    <div data-key="74" class="sound snare"><kbd>J</kbd><span class="sound-name">J<br>SNARE</span><button data-key="74" type="button" class="play btn-reset btn-snare"></button></div>
+    <div data-key="75" class="sound tom"><kbd>K</kbd><span class="sound-name">K<br>TOM</span><button data-key="75" type="button" class="play btn-reset btn-tom"></button></div>
+    <div data-key="76" class="sound tink"><kbd>L</kbd><span class="sound-name">L<br>TINK</span><button data-key="76" type="button" class="play btn-reset btn-tink"></button></div>   
+    </div>
+    <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+    <script>
+const listen = document.querySelector('.sounds');
+const createNote = (e) => {
+    let current = document.querySelector(`div[data-key="${e.keyCode}"]`);
+    const note = document.createElement('i')
+    note.classList.toggle('visual')
+    
+    const x = e.clientX
+    const y = e.clientY
+
+    const leftOffset = e.target.offsetLeft
+    const topOffset = e.target.offsetTop
+
+    const xInside = x - leftOffset
+    const yInside = y - topOffset
+
+    note.style.top = `${yInside}px`
+    note.style.left = `${xInside}px`
+    if (current !== null) {
+    current.appendChild(note);
+    } else {
+      listen.appendChild(note);
+    }
+
+    
+
+    setTimeout(() => note.remove(), 400)
+}
+
+       function removeTransition(e) {
+    if (e.propertyName !== 'box-shadow') return;
+    e.target.classList.remove('playing');
+  }
+      
+        function playSound(e) {
+          console.log(e);
+          const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+          const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+          const border = document.querySelector(`button[data-key="${e.keyCode}"]`);
+          
+          if (!audio) return;
+      
+          border.classList.toggle('playing');
+          audio.currentTime = 0;
+          audio.play();
+          createNote(e);
+        }
+        document.querySelectorAll('.sound').forEach(function(element){
+          element.onclick = function(e) {
+            let btn = this.getAttribute('data-key');
+            let sound = document.querySelector(`audio[data-key="${btn}"]`);
+            let action = document.querySelector(`button[data-key="${btn}"]`);
+          
+          action.classList.toggle('playing');
+          sound.currentTime = 0;
+          sound.play();
+          createNote(e);
+          }
+        });
+        const keys = Array.from(document.querySelectorAll('.play'));
+  keys.forEach(play =>play.addEventListener('transitionend', removeTransition));
+        window.addEventListener('keydown', playSound);
+   
+   
+    
+        
+      </script>
+      
+</body>
+</html>
